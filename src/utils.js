@@ -7,6 +7,12 @@ export const ncpp = util.promisify(ncp.ncp);
 export const readFile = util.promisify(fs.readFile);
 export const writeFile = util.promisify(fs.writeFile);
 
+const package_json_script = {
+    prestart: "npm run build",
+    start: "node dist/index.js"
+};
+
+
 export class Generator {
 
     constructor(CURR_DIR) {
@@ -15,6 +21,23 @@ export class Generator {
 
     readPackage() {
         return readFile(`${this.CURR_DIR}/package.json`, 'utf8');
+    }
+
+    _generatePackage(package_json_orginal, scripts, devDependencies) {
+        const package_json = {
+            scripts: {
+                ...package_json_orginal.scripts,
+                ...package_json_script,
+                ...scripts
+            },
+            devDependencies: {
+                ...package_json_orginal.devDependencies,
+                ...devDependencies
+            }
+        };
+        package_json_orginal.scripts = {...package_json.scripts};
+        package_json_orginal.devDependencies = {...package_json.devDependencies};
+        return package_json_orginal;
     }
 
     _copyFiles(lang, config_file) {

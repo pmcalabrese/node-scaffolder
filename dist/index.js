@@ -12,6 +12,12 @@ const ncpp = util.promisify(ncp.ncp);
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 
+const package_json_script = {
+    prestart: "npm run build",
+    start: "node dist/index.js"
+};
+
+
 class Generator {
 
     constructor(CURR_DIR) {
@@ -22,15 +28,27 @@ class Generator {
         return readFile(`${this.CURR_DIR}/package.json`, 'utf8');
     }
 
+    _generatePackage(package_json_orginal, scripts, devDependencies) {
+        const package_json = {
+            scripts: {
+                ...package_json_orginal.scripts,
+                ...package_json_script,
+                ...scripts
+            },
+            devDependencies: {
+                ...package_json_orginal.devDependencies,
+                ...devDependencies
+            }
+        };
+        package_json_orginal.scripts = {...package_json.scripts};
+        package_json_orginal.devDependencies = {...package_json.devDependencies};
+        return package_json_orginal;
+    }
+
     _copyFiles(lang, config_file) {
-        return ncpp(path.resolve(`${__dirname}/../templates/${lang}/${config_file}`), `${CURR_DIR}/${config_file}`)
+        return ncpp(path.resolve(`${__dirname}/../templates/${lang}/${config_file}`), `${this.CURR_DIR}/${config_file}`)
     }
 }
-
-const package_json_script = {
-    prestart: "npm run build",
-    start: "node dist/index.js"
-};
 
 class GeneratorRollup extends Generator {
 
@@ -48,21 +66,16 @@ class GeneratorRollup extends Generator {
     }
 
     generatePackage(package_json_orginal) {
-        const package_json = {
-            scripts: {
-                ...package_json_orginal.scripts,
-                ...package_json_script,
+        return this._generatePackage(package_json_orginal, 
+            {
                 build: "rollup --config",
                 watch: "rollup --config -w"
             },
-            devDependencies: {
-                ...package_json_orginal.devDependencies,
+            {
                 rollup: "^0.57.1"
             }
-        };
-        package_json_orginal.scripts = {...package_json.scripts};
-        package_json_orginal.devDependencies = {...package_json.devDependencies};
-        return package_json_orginal;
+        )
+        
     }
 
     copyFiles(lang) {
@@ -70,11 +83,11 @@ class GeneratorRollup extends Generator {
     }
 }
 
-const CURR_DIR$1 = process.cwd();
+const CURR_DIR = process.cwd();
 
-const GeneratorRollupService = new GeneratorRollup(CURR_DIR$1);
+const GeneratorRollupService = new GeneratorRollup(CURR_DIR);
 
-console.log('Hi, welcome to Node Project Generator', CURR_DIR$1);
+console.log('Hi, welcome to Node Project Generator', CURR_DIR);
 
 const questions = [
     {
@@ -107,7 +120,7 @@ const questions = [
 ];
 
 function scaffoldFolder(lang) {
-    ncpp(path.resolve(`${__dirname}/../templates/${lang}/src`), `${CURR_DIR$1}/src`, { clobber: false });
+    ncpp(path.resolve(`${__dirname}/../templates/${lang}/src`), `${CURR_DIR}/src`, { clobber: false });
 }
 
 inquirer.prompt(questions)
