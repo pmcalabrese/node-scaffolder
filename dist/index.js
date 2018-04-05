@@ -27,12 +27,16 @@ class Generator {
         return readFile(`${this.CURR_DIR}/package.json`, 'utf8');
     }
 
+    savePackage(new_package_json) {
+        return writeFile(`${this.CURR_DIR}/package.json`, JSON.stringify(new_package_json, null, 4));
+    }
+
     _writePackage(scripts, devDependencies) {
         return this.readPackage()
         .then((package_json_orginal) => {
             return this._generatePackage(JSON.parse(package_json_orginal), scripts, devDependencies);
-        }).catch((err) => {
-            console.log(err);
+        }).then((new_package_json) => {
+            this.savePackage(new_package_json);
         })
     }
 
@@ -78,9 +82,31 @@ class GeneratorRollup extends Generator {
     }
 }
 
+class GeneratorWebpack extends Generator {
+
+    constructor(CURR_DIR) {
+        super(CURR_DIR);
+    } 
+
+    writePackage() {
+        return this._writePackage({
+            build: "webpack",
+            watch: "webpack -w"
+        },{
+            "webpack": "^4.5.0",
+            "webpack-cli": "^2.0.14"
+        })
+    }
+
+    copyFiles(lang) {
+        return this._copyFiles(lang, 'webpack.config.js');
+    }
+}
+
 const CURR_DIR = process.cwd();
 
 const GeneratorRollupService = new GeneratorRollup(CURR_DIR);
+const GeneratorWebpackService = new GeneratorWebpack(CURR_DIR);
 
 console.log('Hi, welcome to Node Project Generator', CURR_DIR);
 
@@ -115,18 +141,25 @@ const questions = [
 ];
 
 function scaffoldFolder(lang) {
-    ncpp(path.resolve(`${__dirname}/../templates/${lang}/src`), `${CURR_DIR}/src`, { clobber: false });
+    return ncpp(path.resolve(`${__dirname}/../templates/${lang}/src`), `${CURR_DIR}/src`, { clobber: false });
 }
 
 inquirer.prompt(questions)
 .then(answers => {
     console.log('\nAnswers:');
     console.log(JSON.stringify(answers, null, '  '));
-    scaffoldFolder(answers.lang);
     if (answers.bundler === 'rollup') {
         Promise.all([
             GeneratorRollupService.writePackage(),
-            GeneratorRollupService.copyFiles(answers.lang)])
+            GeneratorRollupService.copyFiles(answers.lang)]), scaffoldFolder(answers.lang)
+        .catch((err) => {
+            if (err) throw err;
+        });
+    }
+    if (answers.bundler === 'webpack') {
+        Promise.all([
+            GeneratorWebpackService.writePackage(),
+            GeneratorWebpackService.copyFiles(answers.lang)]), scaffoldFolder(answers.lang)
         .catch((err) => {
             if (err) throw err;
         });

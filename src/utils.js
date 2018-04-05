@@ -22,12 +22,16 @@ export class Generator {
         return readFile(`${this.CURR_DIR}/package.json`, 'utf8');
     }
 
+    savePackage(new_package_json) {
+        return writeFile(`${this.CURR_DIR}/package.json`, JSON.stringify(new_package_json, null, 4));
+    }
+
     _writePackage(scripts, devDependencies) {
         return this.readPackage()
         .then((package_json_orginal) => {
             return this._generatePackage(JSON.parse(package_json_orginal), scripts, devDependencies);
-        }).catch((err) => {
-            console.log(err);
+        }).then((new_package_json) => {
+            this.savePackage(new_package_json);
         })
     }
 
