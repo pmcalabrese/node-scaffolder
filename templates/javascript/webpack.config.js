@@ -10,7 +10,7 @@ const serverConfig = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'index.js'
     },
-    devtool: 'source-map'
+    devtool: process.env.NODE_ENV === 'production' ? '' : 'source-map'
 };
 
 module.exports = [ serverConfig ];
