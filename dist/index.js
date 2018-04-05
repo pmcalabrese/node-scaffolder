@@ -4,9 +4,9 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var ncp = _interopDefault(require('ncp'));
 var fs = _interopDefault(require('fs'));
+var path = _interopDefault(require('path'));
 var util = _interopDefault(require('util'));
 var inquirer = _interopDefault(require('inquirer'));
-var path$1 = _interopDefault(require('path'));
 
 const ncpp = util.promisify(ncp.ncp);
 const readFile = util.promisify(fs.readFile);
@@ -15,15 +15,15 @@ const writeFile = util.promisify(fs.writeFile);
 class Generator {
 
     constructor(CURR_DIR) {
-        this.getPackage = readFile(`${CURR_DIR}/package.json`, 'utf8');
+        this.CURR_DIR = CURR_DIR;
     }
 
-    generatePackage(package_json_orginal) {
-
+    readPackage() {
+        return readFile(`${this.CURR_DIR}/package.json`, 'utf8');
     }
 
-    copyFiles() {
-
+    _copyFiles(lang, config_file) {
+        return ncpp(path.resolve(`${__dirname}/../templates/${lang}/${config_file}`), `${CURR_DIR}/${config_file}`)
     }
 }
 
@@ -39,12 +39,12 @@ class GeneratorRollup extends Generator {
     } 
 
     writePackage() {
-        this.getPackage()
+        return this.readPackage()
         .then((package_json_orginal) => {
             return this.generatePackage(JSON.parse(package_json_orginal));
         }).catch((err) => {
             console.log(err);
-        });
+        })
     }
 
     generatePackage(package_json_orginal) {
@@ -66,7 +66,7 @@ class GeneratorRollup extends Generator {
     }
 
     copyFiles(lang) {
-        return ncpp(path.resolve(`${__dirname}/../templates/${lang}/rollup.config.js`), `${CURR_DIR}/rollup.config.js`)
+        return this._copyFiles(lang, 'rollup.config.js');
     }
 }
 
@@ -107,7 +107,7 @@ const questions = [
 ];
 
 function scaffoldFolder(lang) {
-    ncpp(path$1.resolve(`${__dirname}/../templates/${lang}/src`), `${CURR_DIR$1}/src`, { clobber: false });
+    ncpp(path.resolve(`${__dirname}/../templates/${lang}/src`), `${CURR_DIR$1}/src`, { clobber: false });
 }
 
 inquirer.prompt(questions)
@@ -116,17 +116,11 @@ inquirer.prompt(questions)
     console.log(JSON.stringify(answers, null, '  '));
     scaffoldFolder(answers.lang);
     if (answers.bundler === 'rollup') {
-        GeneratorRollupService.writePackage().then((new_package) => {
-            console.log('new_package',new_package);
-        });
-        GeneratorRollupService.copyFiles(answers.lang)
-        .then(() => {
-
-        }).catch((err) => {
+        Promise.all([
+            GeneratorRollupService.writePackage(),
+            GeneratorRollupService.copyFiles(answers.lang)])
+        .catch((err) => {
             if (err) throw err;
         });
-        setTimeout(() => {
-            
-        }, 100);
     }
 });

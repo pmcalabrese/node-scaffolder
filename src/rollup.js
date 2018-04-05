@@ -12,7 +12,7 @@ export class GeneratorRollup extends Generator {
     } 
 
     writePackage() {
-        this.getPackage()
+        return this.readPackage()
         .then((package_json_orginal) => {
             return this.generatePackage(JSON.parse(package_json_orginal));
         }).catch((err) => {
@@ -39,6 +39,6 @@ export class GeneratorRollup extends Generator {
     }
 
     copyFiles(lang) {
-        return ncpp(path.resolve(`${__dirname}/../templates/${lang}/rollup.config.js`), `${CURR_DIR}/rollup.config.js`)
+        return this._copyFiles(lang, 'rollup.config.js');
     }
 }

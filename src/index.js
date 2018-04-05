@@ -50,17 +50,11 @@ inquirer.prompt(questions)
     console.log(JSON.stringify(answers, null, '  '));
     scaffoldFolder(answers.lang);
     if (answers.bundler === 'rollup') {
-        GeneratorRollupService.writePackage().then((new_package) => {
-            console.log('new_package',new_package);
-        });
-        GeneratorRollupService.copyFiles(answers.lang)
-        .then(() => {
-
-        }).catch((err) => {
+        Promise.all([
+            GeneratorRollupService.writePackage(),
+            GeneratorRollupService.copyFiles(answers.lang)])
+        .catch((err) => {
             if (err) throw err;
         });
-        setTimeout(() => {
-            
-        }, 100);
     }
 });
