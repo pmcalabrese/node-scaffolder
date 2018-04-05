@@ -12,7 +12,6 @@ const package_json_script = {
     start: "node dist/index.js"
 };
 
-
 export class Generator {
 
     constructor(CURR_DIR) {
@@ -21,6 +20,15 @@ export class Generator {
 
     readPackage() {
         return readFile(`${this.CURR_DIR}/package.json`, 'utf8');
+    }
+
+    _writePackage(scripts, devDependencies) {
+        return this.readPackage()
+        .then((package_json_orginal) => {
+            return this._generatePackage(JSON.parse(package_json_orginal), scripts, devDependencies);
+        }).catch((err) => {
+            console.log(err);
+        })
     }
 
     _generatePackage(package_json_orginal, scripts, devDependencies) {

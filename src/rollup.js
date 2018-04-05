@@ -7,25 +7,12 @@ export class GeneratorRollup extends Generator {
     } 
 
     writePackage() {
-        return this.readPackage()
-        .then((package_json_orginal) => {
-            return this.generatePackage(JSON.parse(package_json_orginal));
-        }).catch((err) => {
-            console.log(err);
+        return this._writePackage({
+            build: "rollup --config",
+            watch: "rollup --config -w"
+        },{
+            rollup: "^0.57.1"
         })
-    }
-
-    generatePackage(package_json_orginal) {
-        return this._generatePackage(package_json_orginal, 
-            {
-                build: "rollup --config",
-                watch: "rollup --config -w"
-            },
-            {
-                rollup: "^0.57.1"
-            }
-        )
-        
     }
 
     copyFiles(lang) {

@@ -17,7 +17,6 @@ const package_json_script = {
     start: "node dist/index.js"
 };
 
-
 class Generator {
 
     constructor(CURR_DIR) {
@@ -26,6 +25,15 @@ class Generator {
 
     readPackage() {
         return readFile(`${this.CURR_DIR}/package.json`, 'utf8');
+    }
+
+    _writePackage(scripts, devDependencies) {
+        return this.readPackage()
+        .then((package_json_orginal) => {
+            return this._generatePackage(JSON.parse(package_json_orginal), scripts, devDependencies);
+        }).catch((err) => {
+            console.log(err);
+        })
     }
 
     _generatePackage(package_json_orginal, scripts, devDependencies) {
@@ -57,25 +65,12 @@ class GeneratorRollup extends Generator {
     } 
 
     writePackage() {
-        return this.readPackage()
-        .then((package_json_orginal) => {
-            return this.generatePackage(JSON.parse(package_json_orginal));
-        }).catch((err) => {
-            console.log(err);
+        return this._writePackage({
+            build: "rollup --config",
+            watch: "rollup --config -w"
+        },{
+            rollup: "^0.57.1"
         })
-    }
-
-    generatePackage(package_json_orginal) {
-        return this._generatePackage(package_json_orginal, 
-            {
-                build: "rollup --config",
-                watch: "rollup --config -w"
-            },
-            {
-                rollup: "^0.57.1"
-            }
-        )
-        
     }
 
     copyFiles(lang) {
