@@ -5,9 +5,14 @@ import pkg from './package.json';
 export default [
 	{
 		input: 'src/index.js',
-		external: ['ncp'],
+		external: ['ncp','inquirer'],
 		output: [
 			{ file: pkg.main, format: 'cjs' },
+		],
+		treeshake: true,
+		plugins: [
+			resolve(),
+			commonjs()
 		]
 	}
 ];
