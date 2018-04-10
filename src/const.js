@@ -26,6 +26,12 @@ export const devDependencies = {
                 "babel": "^6.23.0",
                 "babel-cli": "^6.26.0",
                 "babel-preset-node8": "^1.2.0"
+            },
+            eslint: {
+                "babel": "^6.23.0",
+                "babel-cli": "^6.26.0",
+                "babel-preset-node8": "^1.2.0",
+                "eslint": "4.19.1"
             }
         }
     },
@@ -82,7 +88,24 @@ export const scripts = {
             none: base_scripts_babel,
             eslint: {
                 postinstall: "eslint --init",
+                lint: "eslint src",
                 ...base_scripts_babel
+            }
+        }
+    },
+    typescript: {
+        rollup: {
+            none: base_scripts_rollup,
+            eslint: {
+                postinstall: "eslint --init",
+                ...base_scripts_rollup,
+            }
+        },
+        weback: {
+            none: base_scripts_webpack,
+            eslint: {
+                postinstall: "eslint --init",
+                ...base_scripts_rollup,
             }
         }
     }
