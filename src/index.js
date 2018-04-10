@@ -1,11 +1,8 @@
 import inquirer from 'inquirer';
 import path from 'path';
 import fs from 'fs';
-import { GeneratorRollup } from './rollup';
-import { GeneratorWebpack } from './webpack';
-import { GeneratorBabel } from './babel';
-import { GeneratorTsc } from './tsc';
-import { ncpp, writeFile } from './utils';
+import process from 'process';
+import { ncpp, writeFile, Generator } from './utils';
 
 const CURR_DIR = process.cwd();
 
@@ -41,9 +38,14 @@ if (!fs.existsSync(path.resolve(CURR_DIR, 'package.json'))) {
 
 inquirer.prompt(questions_1).then((answers_1) => {
 
-    let bundler_options = {
+    const bundler_options = {
         javascript: ['Rollup', 'Webpack', 'Babel'],
         typescript: ['Rollup', 'Webpack', 'tsc']
+    }
+
+    const linter_options = {
+        javascript: ['None', 'ESlint'],
+        typescript: ['None']
     }
 
     const questions_2 = [
@@ -52,6 +54,15 @@ inquirer.prompt(questions_1).then((answers_1) => {
             name: 'bundler',
             message: 'Bundler?',
             choices: bundler_options[answers_1.lang],
+            filter: function (val) {
+                return val.toLowerCase();
+            }
+        },
+        {
+            type: 'list',
+            name: 'linter',
+            message: 'Linter?',
+            choices: linter_options[answers_1.lang],
             filter: function (val) {
                 return val.toLowerCase();
             }
@@ -75,18 +86,13 @@ inquirer.prompt(questions_1).then((answers_1) => {
             ...answers_2
         }
 
-        const Generators = {
-            rollup: new GeneratorRollup(CURR_DIR),
-            webpack: new GeneratorWebpack(CURR_DIR),
-            babel: new GeneratorBabel(CURR_DIR),
-            tsc: new GeneratorTsc(CURR_DIR)
-        }
+        const Scaffolder = new Generator(CURR_DIR, answers.lang, answers.bundler, answers.linter );
 
         Promise.all([
             scaffoldFolder(answers.lang),
             scaffoldReadme(),
-            Generators[answers.bundler].writePackage(answers.lang),
-            Generators[answers.bundler].copyFiles(answers.lang)
+            Scaffolder._writePackage(),
+            Scaffolder._copyFiles()
         ])
         .then(() => {
             console.log(`\nDone, you are all set try to run:\n\n\tnpm install\n\nand right after:\n\n\tnpm start`);

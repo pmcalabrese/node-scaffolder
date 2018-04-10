@@ -11,8 +11,8 @@ export default [
 		],
 		treeshake: true,
 		plugins: [
-			resolve(),
-			commonjs()
+			// resolve(),
+			// commonjs()
 		]
 	}
 ];

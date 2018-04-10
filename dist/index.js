@@ -7,6 +7,43 @@ var fs = _interopDefault(require('fs'));
 var path = _interopDefault(require('path'));
 var util = _interopDefault(require('util'));
 var inquirer = _interopDefault(require('inquirer'));
+var process = _interopDefault(require('process'));
+
+const devDependencies = {
+    javascript: {
+        rollup: {
+            none: {
+                "rollup": "^0.57.1"
+            },
+            eslint: {
+                "rollup": "^0.57.1",
+                "rollup-plugin-eslint": "^4.0.0",
+                "eslint": "4.19.1"
+            }
+        }
+    }
+};
+
+const base_script_rollup = {
+    build: "rollup --config",
+    watch: "rollup --config -w"
+};
+
+const scripts = {
+    javascript: {
+        rollup: {
+            none: base_script_rollup,
+            eslint: {
+                postinstall: "eslint --init",
+                ...base_script_rollup,
+            }
+        }
+    }
+};
+
+const config_files = {
+    rollup: "rollup.config.js"
+};
 
 const ncpp = util.promisify(ncp.ncp);
 const readFile = util.promisify(fs.readFile);
@@ -19,7 +56,10 @@ const package_json_script = {
 
 class Generator {
 
-    constructor(CURR_DIR) {
+    constructor(CURR_DIR, lang, bundler, linter) {
+        this.lang = lang;
+        this.bundler = bundler;
+        this.linter = linter;
         this.CURR_DIR = CURR_DIR;
     }
 
@@ -31,25 +71,25 @@ class Generator {
         return writeFile(`${this.CURR_DIR}/package.json`, JSON.stringify(new_package_json, null, 4));
     }
 
-    _writePackage(scripts, devDependencies) {
+    _writePackage() {
         return this.readPackage()
         .then((package_json_orginal) => {
-            return this._generatePackage(JSON.parse(package_json_orginal), scripts, devDependencies);
+            return this._generatePackage(JSON.parse(package_json_orginal), scripts[this.lang][this.bundler][this.linter], devDependencies[this.lang][this.bundler][this.linter]);
         }).then((new_package_json) => {
             this.savePackage(new_package_json);
         })
     }
 
-    _generatePackage(package_json_orginal, scripts, devDependencies) {
+    _generatePackage(package_json_orginal, scripts$$1, devDependencies$$1) {
         const package_json = {
             scripts: {
                 ...package_json_orginal.scripts,
                 ...package_json_script,
-                ...scripts
+                ...scripts$$1
             },
             devDependencies: {
                 ...package_json_orginal.devDependencies,
-                ...devDependencies
+                ...devDependencies$$1
             }
         };
         package_json_orginal.scripts = {...package_json.scripts};
@@ -57,120 +97,8 @@ class Generator {
         return package_json_orginal;
     }
 
-    _copyFiles(lang, config_file) {
-        return ncpp(path.resolve(`${__dirname}/../templates/${lang}/${config_file}`), `${this.CURR_DIR}/${config_file}`)
-    }
-}
-
-class GeneratorRollup extends Generator {
-
-    constructor(CURR_DIR) {
-        super(CURR_DIR);
-    } 
-
-    writePackage(lang = 'javascript') {
-
-        const devDependencies = {
-            javascript: {
-                "rollup": "^0.57.1"
-            },
-            typescript: {
-                "rollup-plugin-typescript": "^0.8.1",
-                "rollup": "^0.57.1"
-            },
-        };
-        
-
-        return this._writePackage({
-            build: "rollup --config",
-            watch: "rollup --config -w"
-        },devDependencies[lang]);
-    }
-
-    copyFiles(lang) {
-        return this._copyFiles(lang, 'rollup.config.js');
-    }
-}
-
-class GeneratorWebpack extends Generator {
-
-    constructor(CURR_DIR) {
-        super(CURR_DIR);
-    } 
-
-    writePackage(lang = 'javascript') {
-
-        const devDependencies = {
-            javascript: {
-                "webpack": "^4.5.0",
-                "webpack-cli": "^2.0.14"
-            },
-            typescript: {
-                "webpack": "^4.5.0",
-                "webpack-cli": "^2.0.14",
-                "typescript": "2.8.1",
-                "ts-loader": "^4.1.0"
-            },
-        };
-
-        return this._writePackage({
-            build: "webpack",
-            watch: "webpack -w"
-        },devDependencies[lang])
-    }
-
-    copyFiles(lang) {
-        let files_promises = [this._copyFiles(lang, 'webpack.config.js')];
-        if (lang === 'typescript') {
-            files_promises.push(this._copyFiles(lang, 'tsconfig.json'));
-        }
-        return Promise.all(files_promises);
-    }
-
-    copyTSConfig(lang) {
-        return this._copyFiles(lang, 'tsconfig.json');
-    }
-}
-
-class GeneratorBabel extends Generator {
-
-    constructor(CURR_DIR) {
-        super(CURR_DIR);
-    } 
-
-    writePackage() {
-        return this._writePackage({
-            build: "babel src/ -d dist/ --source-maps",
-            watch: "babel -w src/ -d dist/ --source-maps"
-        },{
-            "babel": "^6.23.0",
-            "babel-cli": "^6.26.0",
-            "babel-preset-node8": "^1.2.0"
-        })
-    }
-
-    copyFiles(lang) {
-        return this._copyFiles(lang, '.babelrc');
-    }
-}
-
-class GeneratorTsc extends Generator {
-
-    constructor(CURR_DIR) {
-        super(CURR_DIR);
-    } 
-
-    writePackage() {
-        return this._writePackage({
-            build: "tsc",
-            watch: "tsc -w"
-        },{
-            "typescript": "2.8.1"
-        })
-    }
-
-    copyFiles(lang) {
-        return this._copyFiles(lang, 'tsconfig.json');
+    _copyFiles() {
+        return ncpp(path.resolve(`${__dirname}/../templates/${this.lang}/${this.bundler}/${this.linter}/${config_files[this.bundler]}`), `${this.CURR_DIR}/${config_files[this.bundler]}`)
     }
 }
 
@@ -208,9 +136,14 @@ if (!fs.existsSync(path.resolve(CURR_DIR, 'package.json'))) {
 
 inquirer.prompt(questions_1).then((answers_1) => {
 
-    let bundler_options = {
+    const bundler_options = {
         javascript: ['Rollup', 'Webpack', 'Babel'],
         typescript: ['Rollup', 'Webpack', 'tsc']
+    };
+
+    const linter_options = {
+        javascript: ['None', 'ESlint'],
+        typescript: ['None']
     };
 
     const questions_2 = [
@@ -219,6 +152,15 @@ inquirer.prompt(questions_1).then((answers_1) => {
             name: 'bundler',
             message: 'Bundler?',
             choices: bundler_options[answers_1.lang],
+            filter: function (val) {
+                return val.toLowerCase();
+            }
+        },
+        {
+            type: 'list',
+            name: 'linter',
+            message: 'Linter?',
+            choices: linter_options[answers_1.lang],
             filter: function (val) {
                 return val.toLowerCase();
             }
@@ -242,18 +184,13 @@ inquirer.prompt(questions_1).then((answers_1) => {
             ...answers_2
         };
 
-        const Generators = {
-            rollup: new GeneratorRollup(CURR_DIR),
-            webpack: new GeneratorWebpack(CURR_DIR),
-            babel: new GeneratorBabel(CURR_DIR),
-            tsc: new GeneratorTsc(CURR_DIR)
-        };
+        const Scaffolder = new Generator(CURR_DIR, answers.lang, answers.bundler, answers.linter );
 
         Promise.all([
             scaffoldFolder(answers.lang),
             scaffoldReadme(),
-            Generators[answers.bundler].writePackage(answers.lang),
-            Generators[answers.bundler].copyFiles(answers.lang)
+            Scaffolder._writePackage(),
+            Scaffolder._copyFiles()
         ])
         .then(() => {
             console.log(`\nDone, you are all set try to run:\n\n\tnpm install\n\nand right after:\n\n\tnpm start`);

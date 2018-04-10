@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import util from 'util';
 
+import { devDependencies, scripts, config_files } from './const'
+
 export const ncpp = util.promisify(ncp.ncp);
 export const readFile = util.promisify(fs.readFile);
 export const writeFile = util.promisify(fs.writeFile);
@@ -14,8 +16,11 @@ const package_json_script = {
 
 export class Generator {
 
-    constructor(CURR_DIR) {
-        this.CURR_DIR = CURR_DIR
+    constructor(CURR_DIR, lang, bundler, linter) {
+        this.lang = lang;
+        this.bundler = bundler;
+        this.linter = linter;
+        this.CURR_DIR = CURR_DIR;
     }
 
     readPackage() {
@@ -26,10 +31,10 @@ export class Generator {
         return writeFile(`${this.CURR_DIR}/package.json`, JSON.stringify(new_package_json, null, 4));
     }
 
-    _writePackage(scripts, devDependencies) {
+    _writePackage() {
         return this.readPackage()
         .then((package_json_orginal) => {
-            return this._generatePackage(JSON.parse(package_json_orginal), scripts, devDependencies);
+            return this._generatePackage(JSON.parse(package_json_orginal), scripts[this.lang][this.bundler][this.linter], devDependencies[this.lang][this.bundler][this.linter]);
         }).then((new_package_json) => {
             this.savePackage(new_package_json);
         })
@@ -52,7 +57,7 @@ export class Generator {
         return package_json_orginal;
     }
 
-    _copyFiles(lang, config_file) {
-        return ncpp(path.resolve(`${__dirname}/../templates/${lang}/${config_file}`), `${this.CURR_DIR}/${config_file}`)
+    _copyFiles() {
+        return ncpp(path.resolve(`${__dirname}/../templates/${this.lang}/${this.bundler}/${this.linter}/${config_files[this.bundler]}`), `${this.CURR_DIR}/${config_files[this.bundler]}`)
     }
 }
