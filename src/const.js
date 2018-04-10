@@ -9,27 +9,87 @@ export const devDependencies = {
                 "rollup-plugin-eslint": "^4.0.0",
                 "eslint": "4.19.1"
             }
+        },
+        webpack: {
+            none: {
+                "webpack": "^4.5.0",
+                "webpack-cli": "^2.0.14"
+            },
+            eslint: {
+                "rollup": "^0.57.1",
+                "rollup-plugin-eslint": "^4.0.0",
+                "eslint": "4.19.1"
+            }
+        },
+        babel: {
+            none: {
+                "babel": "^6.23.0",
+                "babel-cli": "^6.26.0",
+                "babel-preset-node8": "^1.2.0"
+            }
+        }
+    },
+    typescript: {
+        rollup: {
+            none: {
+                "rollup-plugin-typescript": "^0.8.1",
+                "rollup": "^0.57.1"
+            }
+        },
+        webpack: {
+            none: {
+                "webpack": "^4.5.0",
+                "webpack-cli": "^2.0.14",
+                "typescript": "2.8.1",
+                "ts-loader": "^4.1.0"
+            }
         }
     }
 }
 
-const base_script_rollup = {
+const base_scripts_rollup = {
     build: "rollup --config",
     watch: "rollup --config -w"
+}
+
+const base_scripts_webpack = {
+    build: "webpack",
+    watch: "webpack -w"
+}
+
+const base_scripts_babel = {
+    build: "babel src/ -d dist/ --source-maps",
+    watch: "babel -w src/ -d dist/ --source-maps"
 }
 
 export const scripts = {
     javascript: {
         rollup: {
-            none: base_script_rollup,
+            none: base_scripts_rollup,
             eslint: {
                 postinstall: "eslint --init",
-                ...base_script_rollup,
+                ...base_scripts_rollup,
+            }
+        },
+        weback: {
+            none: base_scripts_webpack,
+            eslint: {
+                postinstall: "eslint --init",
+                ...base_scripts_rollup,
+            }
+        },
+        babel: {
+            none: base_scripts_babel,
+            eslint: {
+                postinstall: "eslint --init",
+                ...base_scripts_babel
             }
         }
     }
 }
 
 export const config_files = {
-    rollup: "rollup.config.js"
+    rollup: "rollup.config.js",
+    webpack: "weback.config.js",
+    babel: ".babelrc"
 }
