@@ -16,8 +16,9 @@ export const devDependencies = {
                 "webpack-cli": "^2.0.14"
             },
             eslint: {
-                "rollup": "^0.57.1",
-                "rollup-plugin-eslint": "^4.0.0",
+                "webpack": "^4.5.0",
+                "webpack-cli": "^2.0.14",
+                "eslint-loader": "latest",
                 "eslint": "4.19.1"
             }
         },
@@ -77,11 +78,11 @@ export const scripts = {
                 ...base_scripts_rollup,
             }
         },
-        weback: {
+        webpack: {
             none: base_scripts_webpack,
             eslint: {
                 postinstall: "eslint --init",
-                ...base_scripts_rollup,
+                ...base_scripts_webpack,
             }
         },
         babel: {
@@ -101,7 +102,7 @@ export const scripts = {
                 ...base_scripts_rollup,
             }
         },
-        weback: {
+        webpack: {
             none: base_scripts_webpack,
             eslint: {
                 postinstall: "eslint --init",
@@ -113,6 +114,6 @@ export const scripts = {
 
 export const config_files = {
     rollup: "rollup.config.js",
-    webpack: "weback.config.js",
+    webpack: "webpack.config.js",
     babel: ".babelrc"
 }

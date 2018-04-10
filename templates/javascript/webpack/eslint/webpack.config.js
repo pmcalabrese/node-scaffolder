@@ -10,7 +10,17 @@ const serverConfig = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'index.js'
     },
-    devtool: process.env.NODE_ENV === 'production' ? '' : 'source-map'
+    devtool: process.env.NODE_ENV === 'production' ? '' : 'source-map',
+    module: {
+        rules: [
+            {
+                enforce: "pre",
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: "eslint-loader",
+            }
+        ],
+    }
 };
 
-module.exports = [ serverConfig ];
+module.exports = [serverConfig];
