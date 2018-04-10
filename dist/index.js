@@ -99,7 +99,7 @@ const scripts = {
             none: base_scripts_babel,
             eslint: {
                 postinstall: "eslint --init",
-                lint: "eslint",
+                lint: "eslint src",
                 ...base_scripts_babel
             }
         }
