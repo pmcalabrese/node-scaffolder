@@ -50,16 +50,31 @@ const devDependencies = {
     typescript: {
         rollup: {
             none: {
+                "typescript": "2.8.1",
                 "rollup-plugin-typescript": "^0.8.1",
                 "rollup": "^0.57.1"
+            },
+            tslint: {
+                "typescript": "2.8.1",
+                "rollup-plugin-typescript": "^0.8.1",
+                "rollup": "^0.57.1",
+                "rollup-plugin-tslint": "^0.1.34"
             }
         },
         webpack: {
             none: {
+                "typescript": "2.8.1",
                 "webpack": "^4.5.0",
                 "webpack-cli": "^2.0.14",
-                "typescript": "2.8.1",
                 "ts-loader": "^4.1.0"
+            },
+            tslint: {
+                "typescript": "2.8.1",
+                "webpack": "^4.5.0",
+                "webpack-cli": "^2.0.14",
+                "ts-loader": "^4.1.0",
+                "tslint": "5.9.1",
+                "tslint-loader": "3.6.0"
             }
         }
     }
@@ -108,16 +123,17 @@ const scripts = {
     typescript: {
         rollup: {
             none: base_scripts_rollup,
-            eslint: {
-                postinstall: "eslint --init",
+            tslint: {
+                postinstall: "tslint --init",
+                lint: "tslint -c tslint.json 'src/**/*.ts'",
                 ...base_scripts_rollup,
             }
         },
         webpack: {
             none: base_scripts_webpack,
-            eslint: {
-                postinstall: "eslint --init",
-                ...base_scripts_rollup,
+            tslint: {
+                postinstall: "tslint --init",
+                ...base_scripts_webpack,
             }
         }
     }
@@ -182,7 +198,13 @@ class Generator {
     }
 
     _copyFiles() {
-        return ncpp(path.resolve(`${__dirname}/../templates/${this.lang}/${this.bundler}/${this.linter}/${config_files[this.bundler]}`), `${this.CURR_DIR}/${config_files[this.bundler]}`)
+        let files_p = [ncpp(path.resolve(`${__dirname}/../templates/${this.lang}/${this.bundler}/${this.linter}/${config_files[this.bundler]}`), `${this.CURR_DIR}/${config_files[this.bundler]}`)];
+
+        if (this.lang === 'typescript') {
+            files_p.push(ncpp(path.resolve(`${__dirname}/../templates/${this.lang}/tsconfig.json`), `${this.CURR_DIR}/tsconfig.json`));
+        }
+
+        return Promise.all(files_p)
     }
 }
 
@@ -227,7 +249,7 @@ inquirer.prompt(questions_1).then((answers_1) => {
 
     const linter_options = {
         javascript: ['None', 'ESlint'],
-        typescript: ['None']
+        typescript: ['None', 'TSlint']
     };
 
     const questions_2 = [

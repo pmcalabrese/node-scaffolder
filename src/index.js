@@ -45,7 +45,7 @@ inquirer.prompt(questions_1).then((answers_1) => {
 
     const linter_options = {
         javascript: ['None', 'ESlint'],
-        typescript: ['None']
+        typescript: ['None', 'TSlint']
     }
 
     const questions_2 = [

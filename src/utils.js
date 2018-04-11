@@ -58,6 +58,12 @@ export class Generator {
     }
 
     _copyFiles() {
-        return ncpp(path.resolve(`${__dirname}/../templates/${this.lang}/${this.bundler}/${this.linter}/${config_files[this.bundler]}`), `${this.CURR_DIR}/${config_files[this.bundler]}`)
+        let files_p = [ncpp(path.resolve(`${__dirname}/../templates/${this.lang}/${this.bundler}/${this.linter}/${config_files[this.bundler]}`), `${this.CURR_DIR}/${config_files[this.bundler]}`)]
+
+        if (this.lang === 'typescript') {
+            files_p.push(ncpp(path.resolve(`${__dirname}/../templates/${this.lang}/tsconfig.json`), `${this.CURR_DIR}/tsconfig.json`))
+        }
+
+        return Promise.all(files_p)
     }
 }
