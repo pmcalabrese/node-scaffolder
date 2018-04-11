@@ -24,14 +24,12 @@ export const devDependencies = {
         },
         babel: {
             none: {
-                "babel": "^6.23.0",
-                "babel-cli": "^6.26.0",
-                "babel-preset-node8": "^1.2.0"
+                "babel-cli": "6.26.0",
+                "babel-preset-env": "1.6.1"
             },
             eslint: {
-                "babel": "^6.23.0",
-                "babel-cli": "^6.26.0",
-                "babel-preset-node8": "^1.2.0",
+                "babel-cli": "6.26.0",
+                "babel-preset-env": "1.6.1",
                 "eslint": "4.19.1"
             }
         }
@@ -64,6 +62,14 @@ export const devDependencies = {
                 "ts-loader": "^4.1.0",
                 "tslint": "5.9.1",
                 "tslint-loader": "3.6.0"
+            }
+        },
+        tsc: {
+            none: {
+
+            },
+            tslint: {
+
             }
         }
     }

@@ -1,5 +1,12 @@
 {
-    "presets": [
-        "node8"
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
     ]
+  ]
 }
