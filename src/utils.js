@@ -2,12 +2,14 @@ import ncp from 'ncp';
 import fs from 'fs';
 import path from 'path';
 import util from 'util';
+import request from 'request';
 
 import { devDependencies, scripts, config_files } from './const'
 
 export const ncpp = util.promisify(ncp.ncp);
 export const readFile = util.promisify(fs.readFile);
 export const writeFile = util.promisify(fs.writeFile);
+export const requestP = util.promisify(request);
 
 const package_json_script = {
     prestart: "npm run build",
