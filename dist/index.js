@@ -293,15 +293,15 @@ const scaffoldReadme = (lang) => {
                 return val.toLowerCase();
             }
         },
-        {
-            type: 'list',
-            name: 'test',
-            message: 'Test?',
-            choices: ['Yes', 'No'],
-            filter: function (val) {
-                return val.toLowerCase();
-            }
-        },
+        // {
+        //     type: 'list',
+        //     name: 'test',
+        //     message: 'Test?',
+        //     choices: ['Yes', 'No'],
+        //     filter: function (val) {
+        //         return val.toLowerCase();
+        //     }
+        // },
     ];
 
     const answers_2 = await inquirer.prompt(questions_2);
