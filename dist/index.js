@@ -239,7 +239,7 @@ const scaffoldReadme = (lang) => {
         process.exit();
     }
     
-    const response = await requestP('https://raw.githubusercontent.com/pmcalabrese/riotjs-webpack/master/package.json');
+    const response = await requestP('https://raw.githubusercontent.com/pmcalabrese/node-scaffolder/master/package.json');
 
     const latest_version = JSON.parse(response.body).version;
 
