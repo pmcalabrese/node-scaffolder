@@ -3,10 +3,10 @@ import path from 'path';
 import colors from 'colors';
 import fs from 'fs';
 import process from 'process';
-import { ncpp, writeFile, Generator, requestP } from './utils';
-const pkg = require("../package.json");
+import { ncpp, writeFile, Generator, requestP, execP } from './utils';
 
 const CURR_DIR = process.cwd();
+let final_text = `\nDone, you are all set try to run ${colors.cyan('npm install')}\nand right after ${colors.cyan('npm start')}`;
 
 const scaffoldFolder = (lang) => {
     return ncpp(path.resolve(`${__dirname}/../templates/${lang}/src`), `${CURR_DIR}/src`, { clobber: false });
@@ -25,17 +25,22 @@ const scaffoldReadme = (lang) => {
         console.log(`Hey, I can't find package.json file in '${CURR_DIR}'.\nDid you run 'npm init'?`);
         process.exit()
     }
+
+    Promise.all([
+        execP('npm list -g node-scaffolder'),
+        requestP({
+            url: 'https://raw.githubusercontent.com/pmcalabrese/node-scaffolder/master/package.json',
+            json: true
+        })
+    ]).then((data) => {
+        const current_version = data[0].stdout.split("node-scaffolder@")[1].split(" ")[0];
+        const latest_version = data[1].body.version
+        if (latest_version !== current_version) {
+            final_text += `\n\nUpdate available ${current_version} → ${colors.green(latest_version)}\nRun ${colors.cyan('npm i -g node-scaffolder')} to update`;
+        }
+    })
     
-    const response = await requestP('https://raw.githubusercontent.com/pmcalabrese/node-scaffolder/master/package.json')
-
-    const latest_version = JSON.parse(response.body).version;
-
-    if (latest_version !== pkg.version) {
-        console.log(`\nUpdate available ${pkg.version} → ${colors.green(latest_version)}\nRun ${colors.cyan('npm i -g npg')} to update`);
-    }
-
-    
-    console.log('\nHi, welcome to Node Project Generator\n');
+    console.log('\nHi, welcome to node-scaffolder\n');
     
     const questions_1 = [
         {
@@ -107,7 +112,8 @@ const scaffoldReadme = (lang) => {
         Scaffolder._copyFiles()
     ])
     .then(() => {
-        console.log(`\nDone, you are all set try to run ${colors.cyan('npm install')}\nand right after ${colors.cyan('npm start')}`);
+        console.log(final_text);
+        process.exit();
     })
     .catch((err) => {
         if (err) throw err;

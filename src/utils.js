@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import util from 'util';
 import request from 'request';
+import { exec } from 'child_process';
 
 import { devDependencies, scripts, config_files } from './const'
 
@@ -10,6 +11,7 @@ export const ncpp = util.promisify(ncp.ncp);
 export const readFile = util.promisify(fs.readFile);
 export const writeFile = util.promisify(fs.writeFile);
 export const requestP = util.promisify(request);
+export const execP = util.promisify(exec);
 
 const package_json_script = {
     prestart: "npm run build",

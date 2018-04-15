@@ -12,7 +12,8 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "copy_cli": "test -d dist || mkdir -p dist && cp ./src/cli.js dist",
         "build": "npm run copy_cli && rollup --config",
-        "watch": "npm run copy_cli && rollup --config -w"
+        "watch": "npm run copy_cli && rollup --config -w",
+        "publish": "npm run build && git push --tags && npm publish"
     },
     "author": "Pachito Marco Calabrese <pm.calabrese@gmail.com>",
     "license": "ISC",
