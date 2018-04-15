@@ -1,8 +1,10 @@
 import inquirer from 'inquirer';
 import path from 'path';
+import colors from 'colors';
 import fs from 'fs';
 import process from 'process';
 import { ncpp, writeFile, Generator, requestP } from './utils';
+const pkg = require("../package.json");
 
 const CURR_DIR = process.cwd();
 
@@ -26,7 +28,11 @@ const scaffoldReadme = (lang) => {
     
     const response = await requestP('https://raw.githubusercontent.com/pmcalabrese/riotjs-webpack/master/package.json')
 
-    console.log('version', JSON.parse(response.body).version);
+    const latest_version = JSON.parse(response.body).version;
+
+    if (latest_version !== pkg.version) {
+        console.log(`\nUpdate available ${pkg.version} → ${colors.green(latest_version)}\nRun ${colors.cyan('npm i -g npg')} to update`);
+    }
 
     
     console.log('\nHi, welcome to Node Project Generator\n');
@@ -101,7 +107,7 @@ const scaffoldReadme = (lang) => {
         Scaffolder._copyFiles()
     ])
     .then(() => {
-        console.log(`\nDone, you are all set try to run:\n\n\tnpm install\n\nand right after:\n\n\tnpm start`);
+        console.log(`\nDone, you are all set try to run ${colors.cyan('npm install')}\nand right after ${colors.cyan('npm start')}`);
     })
     .catch((err) => {
         if (err) throw err;

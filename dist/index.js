@@ -6,7 +6,9 @@ var ncp = _interopDefault(require('ncp'));
 var fs = _interopDefault(require('fs'));
 var path = _interopDefault(require('path'));
 var util = _interopDefault(require('util'));
+var request = _interopDefault(require('request'));
 var inquirer = _interopDefault(require('inquirer'));
+var colors = _interopDefault(require('colors'));
 var process = _interopDefault(require('process'));
 
 const devDependencies = {
@@ -154,6 +156,7 @@ const config_files = {
 const ncpp = util.promisify(ncp.ncp);
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
+const requestP = util.promisify(request);
 
 const package_json_script = {
     prestart: "npm run build",
@@ -214,39 +217,52 @@ class Generator {
     }
 }
 
+const pkg = require("../package.json");
+
 const CURR_DIR = process.cwd();
 
-console.log('\nHi, welcome to Node Project Generator\n');
-
-const questions_1 = [
-    {
-        type: 'list',
-        name: 'lang',
-        message: 'Language?',
-        choices: ['Typescript', 'Javascript',],
-        filter: function (val) {
-            return val.toLowerCase();
-        }
-    }
-];
-
-function scaffoldFolder(lang) {
+const scaffoldFolder = (lang) => {
     return ncpp(path.resolve(`${__dirname}/../templates/${lang}/src`), `${CURR_DIR}/src`, { clobber: false });
-}
+};
 
-function scaffoldReadme(lang) {
+const scaffoldReadme = (lang) => {
     const package_json = JSON.parse(fs.readFileSync(path.resolve(CURR_DIR, 'package.json')));
     let text = fs.readFileSync(path.resolve(`${__dirname}/../templates/README.md`));
     text = `# ${package_json.name}\n\n` + text;
     return writeFile(path.resolve(`${CURR_DIR}`, 'README.md'), text, 'utf8');
-}
+};
 
-if (!fs.existsSync(path.resolve(CURR_DIR, 'package.json'))) {
-    console.log(`Hey, I can't find package.json file in '${CURR_DIR}'.\nDid you run 'npm init'?`);
-    process.exit();
-}
+(async () => {
 
-inquirer.prompt(questions_1).then((answers_1) => {
+    if (!fs.existsSync(path.resolve(CURR_DIR, 'package.json'))) {
+        console.log(`Hey, I can't find package.json file in '${CURR_DIR}'.\nDid you run 'npm init'?`);
+        process.exit();
+    }
+    
+    const response = await requestP('https://raw.githubusercontent.com/pmcalabrese/riotjs-webpack/master/package.json');
+
+    const latest_version = JSON.parse(response.body).version;
+
+    if (latest_version !== pkg.version) {
+        console.log(`\nUpdate available ${pkg.version} → ${colors.green(latest_version)}\nRun ${colors.cyan('npm i -g npg')} to update`);
+    }
+
+    
+    console.log('\nHi, welcome to Node Project Generator\n');
+    
+    const questions_1 = [
+        {
+            type: 'list',
+            name: 'lang',
+            message: 'Language?',
+            choices: ['Typescript', 'Javascript',],
+            filter: function (val) {
+                return val.toLowerCase();
+            }
+        }
+    ];
+        
+    const answers_1 = await inquirer.prompt(questions_1);
 
     const bundler_options = {
         javascript: ['Rollup', 'Webpack', 'Babel'],
@@ -288,29 +304,28 @@ inquirer.prompt(questions_1).then((answers_1) => {
         },
     ];
 
-    inquirer.prompt(questions_2)
-    .then(answers_2 => {
+    const answers_2 = await inquirer.prompt(questions_2);
 
-        const answers = {
-            ...answers_1,
-            ...answers_2
-        };
+    const answers = {
+        ...answers_1,
+        ...answers_2
+    };
 
-        const Scaffolder = new Generator(CURR_DIR, answers.lang, answers.bundler, answers.linter );
+    const Scaffolder = new Generator(CURR_DIR, answers.lang, answers.bundler, answers.linter );
 
-        Promise.all([
-            scaffoldFolder(answers.lang),
-            scaffoldReadme(),
-            Scaffolder._writePackage(),
-            Scaffolder._copyFiles()
-        ])
-        .then(() => {
-            console.log(`\nDone, you are all set try to run:\n\n\tnpm install\n\nand right after:\n\n\tnpm start`);
-        })
-        .catch((err) => {
-            if (err) throw err;
-        });
-
+    Promise.all([
+        scaffoldFolder(answers.lang),
+        scaffoldReadme(),
+        Scaffolder._writePackage(),
+        Scaffolder._copyFiles()
+    ])
+    .then(() => {
+        console.log(`\nDone, you are all set try to run ${colors.cyan('npm install')}\nand right after ${colors.cyan('npm start')}`);
+    })
+    .catch((err) => {
+        if (err) throw err;
     });
 
-});
+
+
+})();

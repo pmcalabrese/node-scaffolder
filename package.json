@@ -17,8 +17,10 @@
     "author": "Pachito Marco Calabrese <pm.calabrese@gmail.com>",
     "license": "ISC",
     "dependencies": {
+        "colors": "^1.2.1",
         "inquirer": "^5.2.0",
-        "ncp": "^2.0.0"
+        "ncp": "^2.0.0",
+        "request": "^2.85.0"
     },
     "devDependencies": {
         "rollup": "^0.57.1",
