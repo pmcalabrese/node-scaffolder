@@ -1,10 +1,10 @@
 {
-    "name": "npg",
+    "name": "node-scaffolder",
     "version": "1.0.0",
     "description": "",
     "main": "./dist/index.js",
     "bin": {
-        "npg": "dist/cli.js"
+        "node-scaffolder": "dist/cli.js"
     },
     "scripts": {
         "prestart": "npm run build",

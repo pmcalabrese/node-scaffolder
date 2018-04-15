@@ -1,10 +1,10 @@
-# Node Project Generator
+# node-scaffolder
 
-Node Project Generator (NPG) is an interactive command line tool to create Node.js project quickly. With it, with just 3 questions (which takes 10 seconds) you can scaffold a project with your favorite language (JS or TS) bundler (Babel, Webpack 4, Rollup, TSC) and test setup.
+Node-scaffolder is an interactive command line tool to create Node.js project quickly. With it, with just 3 questions (which takes 10 seconds) you can scaffold a project with your favorite language (JS or TS) bundler (Babel, Webpack 4, Rollup, TSC) and test setup.
 
 ## Install
 
-    npm install npg -g
+    npm install node-scaffolder -g
 
 ## How it works
 
@@ -22,7 +22,7 @@ create a package.json file with
 
 now you can run npg
 
-    npg
+    node-scaffolder
 
 follow the questions... and you are set, now you can run
 
