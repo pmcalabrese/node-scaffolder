@@ -1,6 +1,6 @@
 {
     "name": "node-scaffolder",
-    "version": "1.0.4",
+    "version": "1.0.3",
     "description": "",
     "main": "./dist/index.js",
     "bin": {
