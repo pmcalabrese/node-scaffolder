@@ -43,7 +43,7 @@ const devDependencies = {
             },
             eslint: {
                 "babel-cli": "6.26.0",
-                "@babel/preset-env": "7.0.0-beta.49",
+                "babel-preset-env": "1.6.1",
                 "eslint": "4.19.1"
             }
         }
