@@ -2,6 +2,8 @@
 
 Node-scaffolder is an interactive command line tool to create Node.js project quickly. With it, with just 3 questions (which takes 10 seconds) you can scaffold a project with your favorite language (JS or TS) bundler (Babel, Webpack 4, Rollup, TSC) and test setup.
 
+[![asciicast](https://asciinema.org/a/185638.png)](https://asciinema.org/a/185638)
+
 ## Install
 
     npm install node-scaffolder -g
