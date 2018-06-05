@@ -16,23 +16,23 @@ const devDependencies = {
     javascript: {
         rollup: {
             none: {
-                "rollup": "^0.57.1"
+                "rollup": "^0.59.4"
             },
             eslint: {
-                "rollup": "^0.57.1",
+                "rollup": "^0.59.4",
                 "rollup-plugin-eslint": "^4.0.0",
                 "eslint": "4.19.1"
             }
         },
         webpack: {
             none: {
-                "webpack": "^4.5.0",
-                "webpack-cli": "^2.0.14"
+                "webpack": "^4.11.0",
+                "webpack-cli": "^3.0.2"
             },
             eslint: {
-                "webpack": "^4.5.0",
-                "webpack-cli": "^2.0.14",
-                "eslint-loader": "latest",
+                "webpack": "^4.11.0",
+                "webpack-cli": "^3.0.2",
+                "eslint-loader": "2.0.0",
                 "eslint": "4.19.1"
             }
         },
@@ -43,7 +43,7 @@ const devDependencies = {
             },
             eslint: {
                 "babel-cli": "6.26.0",
-                "babel-preset-env": "1.6.1",
+                "@babel/preset-env": "7.0.0-beta.49",
                 "eslint": "4.19.1"
             }
         }
@@ -236,7 +236,7 @@ const scaffoldReadme = (lang) => {
 (async () => {
 
     if (!fs.existsSync(path.resolve(CURR_DIR, 'package.json'))) {
-        console.log(`Hey, I can't find package.json file in '${CURR_DIR}'.\nDid you run 'npm init'?`);
+        console.log(`Hey, I can't find package.json file in '${CURR_DIR}'.\nDid you run ${colors.cyan('npm init')}?`);
         process.exit();
     }
 

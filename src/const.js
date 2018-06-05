@@ -2,23 +2,23 @@ export const devDependencies = {
     javascript: {
         rollup: {
             none: {
-                "rollup": "^0.57.1"
+                "rollup": "^0.59.4"
             },
             eslint: {
-                "rollup": "^0.57.1",
+                "rollup": "^0.59.4",
                 "rollup-plugin-eslint": "^4.0.0",
                 "eslint": "4.19.1"
             }
         },
         webpack: {
             none: {
-                "webpack": "^4.5.0",
-                "webpack-cli": "^2.0.14"
+                "webpack": "^4.11.0",
+                "webpack-cli": "^3.0.2"
             },
             eslint: {
-                "webpack": "^4.5.0",
-                "webpack-cli": "^2.0.14",
-                "eslint-loader": "latest",
+                "webpack": "^4.11.0",
+                "webpack-cli": "^3.0.2",
+                "eslint-loader": "2.0.0",
                 "eslint": "4.19.1"
             }
         },

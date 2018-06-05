@@ -22,7 +22,7 @@ const scaffoldReadme = (lang) => {
 (async () => {
 
     if (!fs.existsSync(path.resolve(CURR_DIR, 'package.json'))) {
-        console.log(`Hey, I can't find package.json file in '${CURR_DIR}'.\nDid you run 'npm init'?`);
+        console.log(`Hey, I can't find package.json file in '${CURR_DIR}'.\nDid you run ${colors.cyan('npm init')}?`);
         process.exit()
     }
 
