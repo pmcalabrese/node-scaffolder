@@ -1,7 +1,8 @@
 // rollup.config.js
 import eslint from 'rollup-plugin-eslint';
+import { terser } from "rollup-plugin-terser";
 
-export default {
+const Config = {
     input: 'src/index.js',
     output: {
         file: 'dist/index.js',
@@ -13,3 +14,7 @@ export default {
         eslint({ /* your options */ })
     ]
 };
+
+process.env.NODE_ENV === 'production' ? Config.plugins.push(terser()) : null;
+
+export default Config;

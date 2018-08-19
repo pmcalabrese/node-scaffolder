@@ -53,11 +53,13 @@ const devDependencies = {
             none: {
                 "typescript": "2.8.1",
                 "rollup-plugin-typescript": "^0.8.1",
+                "rollup-plugin-terser": "latest",
                 "rollup": "^0.57.1"
             },
             tslint: {
                 "typescript": "2.8.1",
                 "rollup-plugin-typescript": "^0.8.1",
+                "rollup-plugin-terser": "latest",
                 "rollup": "^0.57.1",
                 "rollup-plugin-tslint": "^0.1.34"
             }

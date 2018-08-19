@@ -2,12 +2,14 @@ export const devDependencies = {
     javascript: {
         rollup: {
             none: {
-                "rollup": "^0.59.4"
+                "rollup": "^0.59.4",
+                "rollup-plugin-terser": "latest",
             },
             eslint: {
                 "rollup": "^0.59.4",
                 "rollup-plugin-eslint": "^4.0.0",
-                "eslint": "4.19.1"
+                "eslint": "4.19.1",
+                "rollup-plugin-terser": "latest",
             }
         },
         webpack: {
@@ -39,11 +41,13 @@ export const devDependencies = {
             none: {
                 "typescript": "2.8.1",
                 "rollup-plugin-typescript": "^0.8.1",
+                "rollup-plugin-terser": "latest",
                 "rollup": "^0.57.1"
             },
             tslint: {
                 "typescript": "2.8.1",
                 "rollup-plugin-typescript": "^0.8.1",
+                "rollup-plugin-terser": "latest",
                 "rollup": "^0.57.1",
                 "rollup-plugin-tslint": "^0.1.34"
             }

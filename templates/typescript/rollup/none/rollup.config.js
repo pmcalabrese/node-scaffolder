@@ -1,7 +1,8 @@
 // rollup.config.js
 import typescript from 'rollup-plugin-typescript';
+import { terser } from "rollup-plugin-terser";
 
-export default {
+const Config =  {
     input: 'src/index.ts',
     output: {
         file: 'dist/index.js',
@@ -10,6 +11,10 @@ export default {
     },
     treeshake: true,
     plugins: [
-        typescript()
+        typescript(),
     ]
 };
+
+process.env.NODE_ENV === 'production' ? Config.plugins.push(terser()) : null;
+
+export default Config;
