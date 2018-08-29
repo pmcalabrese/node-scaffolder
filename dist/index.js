@@ -12,16 +12,35 @@ var inquirer = _interopDefault(require('inquirer'));
 var colors = _interopDefault(require('colors'));
 var process = _interopDefault(require('process'));
 
+const package_json_script = {
+    prestart: "npm run build",
+    start: "node dist/index.js"
+};
+
+const base_package =  {
+    rollup: {
+        main: "dist/index.js",
+        module: "dist/index.esm.js",
+        browser: "dist/index.umd.js",
+    }
+};
+
 const devDependencies = {
     javascript: {
         rollup: {
             none: {
-                "rollup": "^0.59.4"
+                "rollup": "^0.65.0",
+                "rollup-plugin-terser": "latest",
+                "rollup-plugin-commonjs": "^9.1.0",
+                "rollup-plugin-node-resolve": "^3.0.0"
             },
             eslint: {
-                "rollup": "^0.59.4",
+                "rollup": "^0.65.0",
                 "rollup-plugin-eslint": "^4.0.0",
-                "eslint": "4.19.1"
+                "eslint": "4.19.1",
+                "rollup-plugin-terser": "latest",
+                "rollup-plugin-commonjs": "^9.1.0",
+                "rollup-plugin-node-resolve": "^3.0.0"
             }
         },
         webpack: {
@@ -92,16 +111,19 @@ const devDependencies = {
 };
 
 const base_scripts_rollup = {
+    ...package_json_script,
     build: "rollup --config",
     watch: "rollup --config -w"
 };
 
 const base_scripts_webpack = {
+    ...package_json_script,
     build: "webpack",
     watch: "webpack -w"
 };
 
 const base_scripts_babel = {
+    ...package_json_script,
     build: "babel src/ -d dist/ --source-maps",
     watch: "babel -w src/ -d dist/ --source-maps"
 };
@@ -162,11 +184,6 @@ const writeFile = util.promisify(fs.writeFile);
 const requestP = util.promisify(request);
 const execP = util.promisify(child_process.exec);
 
-const package_json_script = {
-    prestart: "npm run build",
-    start: "node dist/index.js"
-};
-
 class Generator {
 
     constructor(CURR_DIR, lang, bundler, linter) {
@@ -187,26 +204,22 @@ class Generator {
     _writePackage() {
         return this.readPackage()
         .then((package_json_orginal) => {
-            return this._generatePackage(JSON.parse(package_json_orginal), scripts[this.lang][this.bundler][this.linter], devDependencies[this.lang][this.bundler][this.linter]);
+            const _package = { ...JSON.parse(package_json_orginal), ...base_package[this.bundler] || {} };
+            return this._generatePackage(_package, scripts[this.lang][this.bundler][this.linter], devDependencies[this.lang][this.bundler][this.linter]);
         }).then((new_package_json) => {
             this.savePackage(new_package_json);
         })
     }
 
     _generatePackage(package_json_orginal, scripts$$1, devDependencies$$1) {
-        const package_json = {
-            scripts: {
-                ...package_json_orginal.scripts,
-                ...package_json_script,
-                ...scripts$$1
-            },
-            devDependencies: {
-                ...package_json_orginal.devDependencies,
-                ...devDependencies$$1
-            }
+        package_json_orginal.scripts = {
+            ...package_json_orginal.scripts,
+            ...scripts$$1
         };
-        package_json_orginal.scripts = {...package_json.scripts};
-        package_json_orginal.devDependencies = {...package_json.devDependencies};
+        package_json_orginal.devDependencies = {
+            ...package_json_orginal.devDependencies,
+            ...devDependencies$$1
+        };
         return package_json_orginal;
     }
 

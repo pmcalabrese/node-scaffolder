@@ -5,18 +5,13 @@ import util from 'util';
 import request from 'request';
 import { exec } from 'child_process';
 
-import { devDependencies, scripts, config_files } from './const'
+import { devDependencies, scripts, config_files, base_package } from './const'
 
 export const ncpp = util.promisify(ncp.ncp);
 export const readFile = util.promisify(fs.readFile);
 export const writeFile = util.promisify(fs.writeFile);
 export const requestP = util.promisify(request);
 export const execP = util.promisify(exec);
-
-const package_json_script = {
-    prestart: "npm run build",
-    start: "node dist/index.js"
-};
 
 export class Generator {
 
@@ -38,26 +33,22 @@ export class Generator {
     _writePackage() {
         return this.readPackage()
         .then((package_json_orginal) => {
-            return this._generatePackage(JSON.parse(package_json_orginal), scripts[this.lang][this.bundler][this.linter], devDependencies[this.lang][this.bundler][this.linter]);
+            const _package = { ...JSON.parse(package_json_orginal), ...base_package[this.bundler] || {} };
+            return this._generatePackage(_package, scripts[this.lang][this.bundler][this.linter], devDependencies[this.lang][this.bundler][this.linter]);
         }).then((new_package_json) => {
             this.savePackage(new_package_json);
         })
     }
 
     _generatePackage(package_json_orginal, scripts, devDependencies) {
-        const package_json = {
-            scripts: {
-                ...package_json_orginal.scripts,
-                ...package_json_script,
-                ...scripts
-            },
-            devDependencies: {
-                ...package_json_orginal.devDependencies,
-                ...devDependencies
-            }
+        package_json_orginal.scripts = {
+            ...package_json_orginal.scripts,
+            ...scripts
         };
-        package_json_orginal.scripts = {...package_json.scripts};
-        package_json_orginal.devDependencies = {...package_json.devDependencies};
+        package_json_orginal.devDependencies = {
+            ...package_json_orginal.devDependencies,
+            ...devDependencies
+        };
         return package_json_orginal;
     }
 
