@@ -31,12 +31,12 @@ export const devDependencies = {
         },
         webpack: {
             none: {
-                "webpack": "^4.11.0",
-                "webpack-cli": "^3.0.2"
+                "webpack": "latest",
+                "webpack-cli": "latest"
             },
             eslint: {
-                "webpack": "^4.11.0",
-                "webpack-cli": "^3.0.2",
+                "webpack": "latest",
+                "webpack-cli": "latest",
                 "eslint-loader": "2.0.0",
                 "eslint": "4.19.1"
             }
@@ -71,13 +71,13 @@ export const devDependencies = {
         },
         webpack: {
             none: {
-                "typescript": "2.8.1",
+                "typescript": "latest",
                 "webpack": "^4.5.0",
                 "webpack-cli": "^2.0.14",
                 "ts-loader": "^4.1.0"
             },
             tslint: {
-                "typescript": "2.8.1",
+                "typescript": "latest",
                 "webpack": "^4.5.0",
                 "webpack-cli": "^2.0.14",
                 "ts-loader": "^4.1.0",
