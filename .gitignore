@@ -2,3 +2,4 @@ node_modules/
 project_output/
 test**
 TODO
+dist

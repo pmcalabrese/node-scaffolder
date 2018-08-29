@@ -1,11 +1,14 @@
 {
     "name": "node-scaffolder",
     "version": "1.1.2",
-    "description": "",
+    "description": "Node-scaffolder is an interactive command line tool to create Node.js project quickly. With it, with just 3 questions (which takes 10 seconds) you can scaffold a project with your favorite language (JS or TS) bundler (Babel, Webpack 4, Rollup, TSC) and test setup.",
     "main": "./dist/index.js",
     "bin": {
         "node-scaffolder": "dist/cli.js"
     },
+    "files": [
+        "dist"
+    ],
     "repository": {
         "type": "git",
         "url": "https://github.com/pmcalabrese/node-scaffolder.git"
@@ -22,14 +25,14 @@
     "author": "Pachito Marco Calabrese <pm.calabrese@gmail.com>",
     "license": "ISC",
     "dependencies": {
-        "colors": "^1.3.0",
-        "inquirer": "^5.2.0",
+        "colors": "^1.3.2",
+        "inquirer": "^6.2.0",
         "ncp": "^2.0.0",
-        "request": "^2.87.0"
+        "request": "^2.88.0"
     },
     "devDependencies": {
-        "rollup": "^0.59.4",
-        "rollup-plugin-commonjs": "^9.1.3",
+        "rollup": "^0.65.0",
+        "rollup-plugin-commonjs": "^9.1.6",
         "rollup-plugin-node-resolve": "^3.3.0"
     }
 }
