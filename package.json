@@ -21,7 +21,7 @@
         "copy_cli": "test -d dist || mkdir -p dist && cp ./src/cli.js dist",
         "build": "npm run copy_cli && rollup --config",
         "watch": "npm run copy_cli && rollup --config -w",
-        "build-publish": "npm run build && git push --tags && npm publish"
+        "prepublishOnly": "npm run build && git push --tagsh"
     },
     "author": "Pachito Marco Calabrese <pm.calabrese@gmail.com>",
     "license": "ISC",
