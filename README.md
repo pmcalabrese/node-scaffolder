@@ -22,14 +22,15 @@ create a package.json file with
 
     npm init
 
-now you can run npg
+now you can run node-scaffolder
 
     node-scaffolder
 
-follow the questions... and you are set, now you can run
+you will be prompted with some questions follow them... and you are set,
+no more copy and paste :) . Now you can install the dependencies with
 
     npm install
 
-and finally
+for iand finally run it with
 
     npm start
