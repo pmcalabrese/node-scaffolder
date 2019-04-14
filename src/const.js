@@ -123,9 +123,9 @@ const base_scripts_webpack = {
 
 const base_scripts_babel = {
   ...package_json_script,
-  "build": "babel src/ -d dist/ --source-maps",
+  build: "babel src/ -d dist/ --source-maps",
   "build-prod": "babel src/ -d dist/ --presets minify",
-  "watch": "babel -w src/ -d dist/ --source-maps"
+  watch: "babel -w src/ -d dist/ --source-maps"
 };
 
 const base_scripts_tsc = {

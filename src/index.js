@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
-import path from "path";
-import fs from "fs";
+import { resolve } from "path";
+import { existsSync } from "fs";
 import process from "process";
 import TEXT_CONST from "./text";
 import { Generator } from "./generator";
@@ -24,7 +24,7 @@ const CURR_DIR = process.cwd();
     console.log(`You are running the latest version of node-scaffolder! Yeah!`);
   }
 
-  if (!fs.existsSync(path.resolve(CURR_DIR, "package.json"))) {
+  if (!existsSync(resolve(CURR_DIR, "package.json"))) {
     console.log(TEXT_CONST.package_json_not_found);
     process.exit();
   }

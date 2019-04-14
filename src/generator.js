@@ -1,13 +1,13 @@
-import ncp from "ncp";
-import fs from "fs";
+import { ncp } from "ncp";
+import { readFile, writeFile } from "fs";
 import path from "path";
 import util from "util";
 
 import { devDependencies, scripts, base_package } from "./const";
 
-export const ncpp = util.promisify(ncp.ncp);
-export const readFile = util.promisify(fs.readFile);
-export const writeFile = util.promisify(fs.writeFile);
+export const ncpp = util.promisify(ncp);
+export const readFilePromise = util.promisify(readFile);
+export const writeFilePromise = util.promisify(writeFile);
 
 export class Generator {
   constructor(lang, bundler, linter) {
