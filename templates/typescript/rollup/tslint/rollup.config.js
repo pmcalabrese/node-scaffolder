@@ -1,8 +1,10 @@
 // rollup.config.js
 import typescript from 'rollup-plugin-typescript';
+import tslint from "rollup-plugin-tslint";
 import { terser } from "rollup-plugin-terser";
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+import json from 'rollup-plugin-json';
 import pkg from './package.json';
 
 const Config = [
@@ -10,14 +12,16 @@ const Config = [
 	{
 		input: 'src/index.ts',
 		output: {
-			name: 'howLongUntilLunch',
+			name: pkg.name,
 			file: pkg.browser,
 			format: 'umd'
         },
         treeshake: true,
 		plugins: [
 			resolve(), // so Rollup can find `ms`
-            commonjs(), // so Rollup can convert `ms` to an ES module
+			commonjs(), // so Rollup can convert `ms` to an ES module
+			json(),
+			tslint({}),
             typescript()
 		]
 	},
@@ -36,6 +40,8 @@ const Config = [
 			{ file: pkg.module, format: 'es' }
         ],
         plugins: [
+			json(),
+			tslint({}),
             typescript(),
         ]
 	}

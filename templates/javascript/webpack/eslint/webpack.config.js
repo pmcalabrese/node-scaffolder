@@ -1,7 +1,7 @@
 var path = require('path');
 
-const serverConfig = {
-    mode: 'development',
+const Config = {
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     target: 'node',
     entry: {
         index: path.resolve(__dirname, 'src/index.js')
@@ -23,4 +23,4 @@ const serverConfig = {
     }
 };
 
-module.exports = [serverConfig];
+module.exports = [Config];
