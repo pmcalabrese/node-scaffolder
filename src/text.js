@@ -10,7 +10,9 @@ let TEXT_CONST = {
     "npm init"
   )}?`,
   update(current_version, latest_version) {
-    return `You are using ${current_version}. The latest version is ${latest_version}. Please update!`;
+    return `You are using ${current_version}. The latest version is ${latest_version}. Please update by running\n\n\t${colors.cyan(
+      "npm i -g node-scaffolder"
+    )}\n!`;
   },
   running_latest: `You are running the latest version! Nice!`
 };
