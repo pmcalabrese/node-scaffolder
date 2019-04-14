@@ -135,7 +135,7 @@ export class Generator {
    */
   _scaffoldTSGitIgnoreFile() {
     return ncpp(
-      path.resolve(`${__dirname}/../templates/.gitignore`),
+      path.resolve(`${__dirname}/../templates/gitignore`),
       `${this.CURR_DIR}/.gitignore`
     );
   }
