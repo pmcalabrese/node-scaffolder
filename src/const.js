@@ -69,7 +69,8 @@ export const devDependencies = {
       none: {
         ...baseRollupDevDependencies,
         "rollup-plugin-typescript": "latest",
-        typescript: "latest"
+        typescript: "latest",
+        tslib: "latest",
       },
       tslint: {
         ...baseRollupDevDependencies,
