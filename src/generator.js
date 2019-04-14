@@ -22,7 +22,7 @@ export class Generator {
    * Returns the JS rapresentation fo the package.json file
    */
   _readPackage() {
-    return readFile(`${this.CURR_DIR}/package.json`, "utf8").then(
+    return readFilePromise(`${this.CURR_DIR}/package.json`, "utf8").then(
       package_json_orginal => {
         return JSON.parse(package_json_orginal);
       }
@@ -43,7 +43,7 @@ export class Generator {
         );
       })
       .then(new_package_json => {
-        return writeFile(
+        return writeFilePromise(
           `${this.CURR_DIR}/package.json`,
           JSON.stringify(new_package_json, null, 4)
         );
@@ -79,7 +79,7 @@ export class Generator {
         path.resolve(`${__dirname}/../templates/README.md`)
       );
       text = `# ${package_json.name}\n\n` + text;
-      return writeFile(
+      return writeFilePromise(
         path.resolve(`${this.CURR_DIR}`, "README.md"),
         text,
         "utf8"
