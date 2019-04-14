@@ -1,5 +1,5 @@
 import { ncp } from "ncp";
-import { readFile, writeFile } from "fs";
+import { readFile, writeFile, readFileSync } from "fs";
 import path from "path";
 import util from "util";
 
@@ -75,7 +75,7 @@ export class Generator {
 
   _scaffoldReadme() {
     return this._readPackage().then(package_json => {
-      let text = fs.readFileSync(
+      let text = readFileSync(
         path.resolve(`${__dirname}/../templates/README.md`)
       );
       text = `# ${package_json.name}\n\n` + text;

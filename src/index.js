@@ -29,7 +29,7 @@ const CURR_DIR = process.cwd();
     process.exit();
   }
 
-  console.log(TEXT_CONST.welcome);
+  console.log(TEXT_CONST.welcome(pkg.version));
 
   const questions_1 = [
     {

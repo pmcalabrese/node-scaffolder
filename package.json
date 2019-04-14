@@ -1,6 +1,6 @@
 {
     "name": "node-scaffolder",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Node-scaffolder is an interactive command line tool to create Node.js project quickly. With it, with just 3 questions (which takes 10 seconds) you can scaffold a project with your favorite language (JS or TS) bundler (Babel, Webpack 4, Rollup, TSC) and test setup.",
     "main": "./dist/index.js",
     "bin": {

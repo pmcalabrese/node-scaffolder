@@ -5,7 +5,9 @@ let TEXT_CONST = {
   final: `\nDone, you are all set try to run ${colors.cyan(
     "npm install"
   )}\nand right after ${colors.cyan("npm start")}`,
-  welcome: `\nHi, welcome to node-scaffolder\n`,
+  welcome(current_version) {
+    return `\nHi, welcome to node-scaffolder v${current_version}\n`;
+  },
   package_json_not_found: `Hey, I can't find package.json file in '${CURR_DIR}'.\nDid you run ${colors.cyan(
     "npm init"
   )}?`,
