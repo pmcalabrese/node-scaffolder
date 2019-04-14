@@ -19,9 +19,9 @@ const CURR_DIR = process.cwd();
   }
 
   if (update) {
-    console.log(`The latest version is ${update.latest}. Please update!`);
+    console.log(TEXT_CONST.update(pkg.version, update.latest));
   } else {
-    console.log(`You are running the latest version of node-scaffolder! Yeah!`);
+    console.log(TEXT_CONST.running_latest);
   }
 
   if (!existsSync(resolve(CURR_DIR, "package.json"))) {
@@ -29,7 +29,7 @@ const CURR_DIR = process.cwd();
     process.exit();
   }
 
-  console.log(TEXT_CONST.welcome_text);
+  console.log(TEXT_CONST.welcome);
 
   const questions_1 = [
     {
@@ -91,7 +91,7 @@ const CURR_DIR = process.cwd();
 
   Promise.all([Scaffolder.copyFiles()])
     .then(() => {
-      console.log(TEXT_CONST.final_text);
+      console.log(TEXT_CONST.final);
       process.exit();
     })
     .catch(err => {
