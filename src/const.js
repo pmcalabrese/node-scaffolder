@@ -53,11 +53,13 @@ export const devDependencies = {
     babel: {
       none: {
         "babel-cli": "latest",
-        "babel-preset-env": "latest"
+        "babel-preset-env": "latest",
+        "babel-preset-minify": "latest"
       },
       eslint: {
         "babel-cli": "latest",
         "babel-preset-env": "latest",
+        "babel-preset-minify": "latest",
         eslint: "latest"
       }
     }
@@ -108,19 +110,22 @@ export const devDependencies = {
 const base_scripts_rollup = {
   ...package_json_script,
   build: "rollup --config",
+  "build-prod": "NODE_ENV=production npm run build",
   watch: "rollup --config -w"
 };
 
 const base_scripts_webpack = {
   ...package_json_script,
   build: "webpack",
+  "build-prod": "NODE_ENV=production npm run build",
   watch: "webpack -w"
 };
 
 const base_scripts_babel = {
   ...package_json_script,
-  build: "babel src/ -d dist/ --source-maps",
-  watch: "babel -w src/ -d dist/ --source-maps"
+  "build": "babel src/ -d dist/ --source-maps",
+  "build-prod": "babel src/ -d dist/ --presets minify",
+  "watch": "babel -w src/ -d dist/ --source-maps"
 };
 
 const base_scripts_tsc = {

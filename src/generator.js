@@ -105,7 +105,7 @@ export class Generator {
     const config_files = {
       rollup: "rollup.config.js",
       webpack: "webpack.config.js",
-      babel: ".babelrc"
+      babel: "babel.config.js"
     };
     // copy config file if the bundler exist
     if (config_files[this.bundler]) {
