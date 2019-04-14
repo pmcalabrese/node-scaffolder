@@ -23,7 +23,7 @@
         "build-prod": "npm run prettier && npm run copy_cli && NODE_ENV=production rollup --config",
         "build": "npm run copy_cli && rollup --config",
         "watch": "npm run copy_cli && rollup --config -w",
-        "prepublishOnly": "npm run build && git push --tags"
+        "prepublishOnly": "npm run build-prod && git push --tags"
     },
     "author": "Pachito Marco Calabrese <pm.calabrese@gmail.com>",
     "license": "ISC",
